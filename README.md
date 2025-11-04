@@ -1,0 +1,1 @@
+Noted is a note sharing for users where users can create and share notes with live edits.
