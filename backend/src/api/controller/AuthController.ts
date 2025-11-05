@@ -50,7 +50,6 @@ export class AuthController {
   async postRefreshToken(req: Request, res: Response, next: NextFunction) {
     try {
       const { token } = req.body;
-      console.log(`Token from here ${token}`);
       const response = await this.refreshToken.execute(token);
       res.status(200).json(response);
     } catch (error) {

@@ -16,7 +16,6 @@ export class RefreshTokenUsecase {
       );
     }
 
-    console.log(`Refresh token ${user.refreshToken} and token is ${token}`);
     if (user.refreshToken != token) {
       throw new UnauthorizedError(
         "Refresh token not found! Maybe changed or expired. Try to login"
@@ -27,6 +26,8 @@ export class RefreshTokenUsecase {
       userId: user.id,
       username: user.username,
     });
+
+    await this.userRepo.updateUser(user.id, { refreshToken: refreshToken });
 
     return {
       id: user.id,
