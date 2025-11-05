@@ -2,6 +2,8 @@ import express from "express";
 import { connectDB } from "./infrastructure/config/db";
 import { authRouter } from "./api/router/auth-router";
 import { errorHandler } from "./api/middleware/handle-error";
+import { noteRouter } from "./api/router/note-router";
+import { validateAuthorization } from "./api/middleware/validate-authorization";
 
 const app = express();
 const BASE_API_URL = "/api/v1";
@@ -9,10 +11,8 @@ const BASE_API_URL = "/api/v1";
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get(`${BASE_API_URL}/test`, (req, res) => {
-  res.send("yes tested");
-});
 app.use(`${BASE_API_URL}/auth`, authRouter);
+app.use(`${BASE_API_URL}/notes`, validateAuthorization, noteRouter);
 
 app.use(errorHandler);
 
