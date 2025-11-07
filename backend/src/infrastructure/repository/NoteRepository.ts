@@ -29,6 +29,11 @@ export class NoteRepository implements INoteRepository {
   }
 
   async listNotesOfUser(userId: string): Promise<Note[]> {
-    throw new Error("Method not implemented.");
+    const noteDocuments = await NoteModel.find({ ownerId: userId });
+    const notes = noteDocuments.map((noteDocument) => {
+      return mapToNote(noteDocument);
+    });
+
+    return notes;
   }
 }

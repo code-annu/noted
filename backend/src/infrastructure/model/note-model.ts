@@ -20,7 +20,7 @@ const NoteSchema = new Schema<NoteDocument>(
     },
     currentContent: {
       type: String,
-      required: [true, "Content is required"],
+      default: "",
       trim: true,
     },
     ownerId: {

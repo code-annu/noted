@@ -3,7 +3,7 @@ import { z } from "zod";
 // Note Creation Input Schema
 export const NoteCreateInputSchema = z.object({
   title: z.string().trim().nonempty("title is required"),
-  content: z.string().trim().nonempty("content is required"),
+  content: z.string().trim(),
 });
 
 // Note Update Input Schema

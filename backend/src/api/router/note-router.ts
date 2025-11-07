@@ -29,3 +29,5 @@ noteRouter.patch(
 );
 
 noteRouter.delete("/:noteId", noteController.deleteNote.bind(noteController));
+
+noteRouter.get("/", noteController.listMyNotes.bind(noteController));

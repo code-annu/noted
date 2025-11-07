@@ -1,5 +1,5 @@
 import { NoteOutputDTO } from "../../application/dto/note-dto";
-import { NoteResponse } from "../response/note-response";
+import { NoteResponse } from "../response/NoteResponse";
 
 export function mapToNoteResponse(noteOutputDTO: NoteOutputDTO): NoteResponse {
   const { id, title, currentContent, createdAt, updatedAt, isPublic } =
