@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import useAuth from "../../../application/hooks/use-auth";
-import { AppRoute } from "../../../router";
+import useAuth from "../../../../application/hooks/use-auth";
+import { AppRoute } from "../../../../router";
 
 const SideNavbar: React.FC = () => {
   const { logout, user } = useAuth();
@@ -26,6 +26,9 @@ const SideNavbar: React.FC = () => {
         </NavLink>
         <NavLink to={`/${user.username}`} className={linkClassNames}>
           Profile
+        </NavLink>
+        <NavLink to={AppRoute.NOTES} className={linkClassNames}>
+          Notes
         </NavLink>
         <button
           onClick={handleLogout}

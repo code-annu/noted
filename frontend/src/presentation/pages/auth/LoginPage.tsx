@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import PrimaryButton from "../../components/common/PrimaryButton";
-import PasswordInput from "../../components/common/PasswordInputField";
-import TextInput from "../../components/common/TextInputField";
+import PrimaryButton from "../../components/common/buttons/PrimaryButton";
+import PasswordInput from "../../components/common/inputs/PasswordInputField";
+import TextInput from "../../components/common/inputs/TextInputField";
 import useAuth from "../../../application/hooks/use-auth";
 import { useNavigate } from "react-router-dom";
 import { AppRoute } from "../../../router";
+import ErrorMessage from "../../components/common/messages/ErrorMessage";
 
 function LoginPage() {
   const { login, error, user } = useAuth();
@@ -58,9 +59,8 @@ function LoginPage() {
         />
         <PrimaryButton text="Login" />
       </form>
-      {error && (
-        <div className="mt-4 text-red-600 text-center font-medium">{error}</div>
-      )}
+      <ErrorMessage message={error} />
+
       <p className="mt-6 text-center text-sm text-gray-600">
         Don't have an account?{" "}
         <Link

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import PrimaryButton from "../../components/common/PrimaryButton";
-import PasswordInput from "../../components/common/PasswordInputField";
-import TextInput from "../../components/common/TextInputField";
+import PrimaryButton from "../../components/common/buttons/PrimaryButton";
+import PasswordInput from "../../components/common/inputs/PasswordInputField";
+import TextInput from "../../components/common/inputs/TextInputField";
 import useAuth from "../../../application/hooks/use-auth";
 import { Link, useNavigate } from "react-router-dom";
 import { AppRoute } from "../../../router";

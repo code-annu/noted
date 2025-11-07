@@ -2,7 +2,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import useAuth from "../../application/hooks/use-auth";
 import { useEffect } from "react";
 import { AppRoute } from "../../router";
-import SideNavbar from "../components/common/SideNavbar";
+import SideNavbar from "../components/common/navbars/SideNavbar";
 
 function DashboardLayout() {
   const { refreshToken } = useAuth();
@@ -12,7 +12,6 @@ function DashboardLayout() {
     refreshToken().then((result) => {
       if (!result) navigateTo(AppRoute.LOGIN);
     });
-    
   }, []);
 
   return (
