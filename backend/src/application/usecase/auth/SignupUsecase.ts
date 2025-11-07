@@ -28,11 +28,12 @@ export class SignupUsecase {
       this.SALT_ROUNDS
     );
 
+
     const createdUser = await this.userRepo.createUser({
       username: signupInput.username,
       passwordHash: hashedPassword,
       fullname: signupInput.fullname,
-      profilePictureUrl: signupInput.fullname,
+      profilePictureUrl: signupInput.profilePictureUrl,
       bio: signupInput.bio ? signupInput.bio : null,
     });
 
