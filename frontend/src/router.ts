@@ -4,11 +4,14 @@ import LoginPage from "./presentation/pages/auth/LoginPage";
 import SignupPage from "./presentation/pages/auth/SignupPage";
 import DashboardLayout from "./presentation/layouts/DashboardLayout";
 import ProfilePage from "./presentation/pages/dashboard/ProfilePage";
+import NotesPage from "./presentation/pages/dashboard/NotesPage";
+import EditNotePage from "./presentation/pages/dashboard/EditNotePage";
 
 export enum AppRoute {
   HOME = "/",
   LOGIN = "/login",
   SIGNUP = "/signup",
+  NOTES = "/notes",
 }
 
 export const appRouter = createBrowserRouter([
@@ -24,6 +27,8 @@ export const appRouter = createBrowserRouter([
         path: "/:username",
         Component: ProfilePage,
       },
+      { path: AppRoute.NOTES, Component: NotesPage },
+      { path: `${AppRoute.NOTES}/:noteId`, Component: EditNotePage },
     ],
   },
   { path: AppRoute.SIGNUP, Component: SignupPage },
