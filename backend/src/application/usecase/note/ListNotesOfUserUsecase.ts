@@ -1,7 +1,7 @@
-import { Note } from "../../../domain/entities/note";
 import { NotFoundError } from "../../../domain/error/NotFoundError";
 import { INoteRepository } from "../../../domain/repository/INoteRepository";
 import { IUserRepository } from "../../../domain/repository/IUserRepository";
+import { NoteOutputDTO } from "../../dto/note-dto";
 
 export class ListNotesOfUserUsecase {
   constructor(
@@ -9,10 +9,13 @@ export class ListNotesOfUserUsecase {
     private readonly userRepo: IUserRepository
   ) {}
 
-  async execute(userId: string): Promise<Note[]> {
+  async execute(userId: string): Promise<NoteOutputDTO[]> {
     const user = await this.userRepo.getUserId(userId);
     if (!user) throw new NotFoundError("User not found!");
 
-    return this.noteRepo.listNotesOfUser(userId);
+    const notes = await this.noteRepo.listNotesOfUser(userId);
+    return notes.map((note) => {
+      return { ...note };
+    });
   }
 }

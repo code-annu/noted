@@ -1,36 +1,37 @@
-import { DatabaseError } from "../../../domain/error/DatabaseError";
 import { ForbiddenError } from "../../../domain/error/ForbiddenError";
 import { NotFoundError } from "../../../domain/error/NotFoundError";
 import { INoteRepository } from "../../../domain/repository/INoteRepository";
+import { INoteVersionRepository } from "../../../domain/repository/INoteVersionRepository";
 import { IUserRepository } from "../../../domain/repository/IUserRepository";
-import { NoteOutputDTO, NoteUpdateInputDTO } from "../../dto/note-dto";
+import { NoteVersionOutputDTO } from "../../dto/note-version-dto";
 
-export class UpdateNoteUsecase {
+export class ListVersionsOfNoteUsecase {
   constructor(
+    private readonly noteVersionRepo: INoteVersionRepository,
     private readonly noteRepo: INoteRepository,
     private readonly userRepo: IUserRepository
   ) {}
 
   async execute(
     noteId: string,
-    updates: NoteUpdateInputDTO,
     userId: string
-  ): Promise<NoteOutputDTO> {
+  ): Promise<NoteVersionOutputDTO[]> {
     const user = await this.userRepo.getUserId(userId);
     if (!user) throw new NotFoundError("User not found!");
 
     const note = await this.noteRepo.getNote(noteId);
     if (!note) throw new NotFoundError("Note not found!");
 
-    if (note.ownerId !== userId) {
-      throw new ForbiddenError("You are not authorized to update this note.");
+    if (note.ownerId !== user.id) {
+      throw new ForbiddenError(
+        "You are not authorized view versions for this note."
+      );
     }
 
-    const updatedNote = await this.noteRepo.updateNote(noteId, updates);
-    if (!updatedNote) {
-      throw new DatabaseError("Unable to update note");
-    }
+    const noteVersions = await this.noteVersionRepo.listAllNoteVersions(noteId);
 
-    return { ...updatedNote };
+    return noteVersions.map((noteVersion) => {
+      return { ...noteVersion };
+    });
   }
 }

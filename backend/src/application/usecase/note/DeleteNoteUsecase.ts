@@ -27,6 +27,6 @@ export class DeleteNoteUsecase {
       throw new DatabaseError("Unable to delete note");
     }
 
-    return { note: deletedNote, owner: user };
+    return {...note}
   }
 }

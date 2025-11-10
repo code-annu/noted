@@ -21,6 +21,6 @@ export class GetNoteUsecase {
       throw new ForbiddenError("You are not authorized to view this note.");
     }
 
-    return { note: note, owner: user };
+    return { ...note };
   }
 }
