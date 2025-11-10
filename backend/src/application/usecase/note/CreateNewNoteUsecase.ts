@@ -11,7 +11,7 @@ export class CreateNewNoteUsecase {
   ) {}
 
   async execute(noteInput: NoteCreateInputDTO): Promise<NoteOutputDTO> {
-    const user = await this.userRepo.getUserId(noteInput.ownerId);
+    const user = await this.userRepo.getUserById(noteInput.ownerId);
     if (!user) {
       throw new NotFoundError("User not found!");
     }

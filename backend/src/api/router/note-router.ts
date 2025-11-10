@@ -8,12 +8,19 @@ import {
 } from "../schema/note-schema";
 import { validateRequestBody } from "../middleware/validate-request-body";
 import { NoteVersionRepository } from "../../infrastructure/repository/NoteVersionRepository";
+import { NoteVersionController } from "../controller/NoteVersionController";
 
 export const noteRouter = Router({ mergeParams: true });
+
 const noteController = new NoteController(
   new NoteRepository(),
-  new UserRepository(),
-  new NoteVersionRepository()
+  new UserRepository()
+);
+
+const noteVersionController = new NoteVersionController(
+  new NoteVersionRepository(),
+  new NoteRepository(),
+  new UserRepository()
 );
 
 noteRouter.post(
@@ -36,5 +43,5 @@ noteRouter.get("/", noteController.listMyNotes.bind(noteController));
 
 noteRouter.get(
   "/:noteId/versions",
-  noteController.listNoteVersions.bind(noteController)
+  noteVersionController.listNoteVersions.bind(noteVersionController)
 );

@@ -19,7 +19,7 @@ export class CreateNewNoteVersionUsecase {
     userId: string,
     noteVersionInput: NoteVersionCreateInputDTO
   ): Promise<NoteVersionOutputDTO> {
-    const user = await this.userRepo.getUserId(userId);
+    const user = await this.userRepo.getUserById(userId);
     if (!user) throw new NotFoundError("User not found!");
 
     const note = await this.noteRepo.getNote(noteVersionInput.noteId);
@@ -43,6 +43,6 @@ export class CreateNewNoteVersionUsecase {
       createdBy: userId,
     });
 
-    return { ...noteVersion };
+    return { noteVersion: noteVersion, createdBy: user };
   }
 }

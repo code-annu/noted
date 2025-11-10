@@ -8,7 +8,6 @@ import { IUserRepository } from "../../domain/repository/IUserRepository";
 import { AuthRequest } from "../middleware/validate-authorization";
 import { BadRequestError } from "../../domain/error/BadRequestError";
 import { ListNotesOfUserUsecase } from "../../application/usecase/note/ListNotesOfUserUsecase";
-import { ListVersionsOfNoteUsecase } from "../../application/usecase/noteversion/ListVersionsOfNoteUsecase";
 import { INoteVersionRepository } from "../../domain/repository/INoteVersionRepository";
 import { mapToNoteResponse } from "../mapper/note-response-mapper";
 
@@ -18,23 +17,13 @@ export class NoteController {
   private readonly updateNoteUsecase: UpdateNoteUsecase;
   private readonly deleteNoteUsecase: DeleteNoteUsecase;
   private readonly listNotesOfUserUsecase: ListNotesOfUserUsecase;
-  private readonly listVersionsOfNoteUsecase: ListVersionsOfNoteUsecase;
 
-  constructor(
-    noteRepo: INoteRepository,
-    userRepo: IUserRepository,
-    noteVersionRepo: INoteVersionRepository
-  ) {
+  constructor(noteRepo: INoteRepository, userRepo: IUserRepository) {
     this.createNewNoteUsecase = new CreateNewNoteUsecase(noteRepo, userRepo);
     this.getNoteUsecase = new GetNoteUsecase(noteRepo, userRepo);
     this.updateNoteUsecase = new UpdateNoteUsecase(noteRepo, userRepo);
     this.deleteNoteUsecase = new DeleteNoteUsecase(noteRepo, userRepo);
     this.listNotesOfUserUsecase = new ListNotesOfUserUsecase(
-      noteRepo,
-      userRepo
-    );
-    this.listVersionsOfNoteUsecase = new ListVersionsOfNoteUsecase(
-      noteVersionRepo,
       noteRepo,
       userRepo
     );
@@ -106,22 +95,6 @@ export class NoteController {
       res
         .status(200)
         .json(notesOutput.map((noteOutput) => mapToNoteResponse(noteOutput)));
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async listNoteVersions(req: AuthRequest, res: Response, next: NextFunction) {
-    try {
-      const userId = req.auth?.userId;
-      const { noteId } = req.params;
-      if (!noteId) throw new BadRequestError("Note id required");
-
-      const noteVersions = await this.listVersionsOfNoteUsecase.execute(
-        noteId,
-        userId!
-      );
-      res.status(200).json(noteVersions);
     } catch (error) {
       next(error);
     }

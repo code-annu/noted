@@ -10,7 +10,7 @@ export class UserRepository implements IUserRepository {
     return mapToUser(userDocument.toObject());
   }
 
-  async getUserId(id: string): Promise<User | null> {
+  async getUserById(id: string): Promise<User | null> {
     const userDocument = await UserModel.findById(id);
     return userDocument ? mapToUser(userDocument.toObject()) : null;
   }

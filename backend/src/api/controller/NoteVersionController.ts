@@ -11,11 +11,14 @@ import {
   NoteVersionUpdateInputDTO,
 } from "../../application/dto/note-version-dto";
 import { BadRequestError } from "../../domain/error/BadRequestError";
+import { mapToNoteVersionResponse } from "../mapper/note-version-response-mapper";
+import { ListVersionsOfNoteUsecase } from "../../application/usecase/noteversion/ListVersionsOfNoteUsecase";
 
 export class NoteVersionController {
   private readonly createNoteVersionUsecase: CreateNewNoteVersionUsecase;
   private readonly updateNoteVersionUsecase: UpdateNoteVersionUsecase;
   private readonly getNoteVersionUsecase: GetNoteVersionUsecase;
+  private readonly listVersionsOfNoteUsecase: ListVersionsOfNoteUsecase;
 
   constructor(
     noteVersionRepo: INoteVersionRepository,
@@ -35,6 +38,12 @@ export class NoteVersionController {
       noteVersionRepo,
       userRepo
     );
+
+    this.listVersionsOfNoteUsecase = new ListVersionsOfNoteUsecase(
+      noteVersionRepo,
+      noteRepo,
+      userRepo
+    );
   }
 
   async postNoteVersion(req: AuthRequest, res: Response, next: NextFunction) {
@@ -45,7 +54,7 @@ export class NoteVersionController {
         userId!,
         data
       );
-      res.status(201).json(noteVersionOutput);
+      res.status(201).json(mapToNoteVersionResponse(noteVersionOutput));
     } catch (error) {
       next(error);
     }
@@ -62,7 +71,7 @@ export class NoteVersionController {
         noteVersionId,
         userId!
       );
-      res.status(200).json(noteVersionOutput);
+      res.status(200).json(mapToNoteVersionResponse(noteVersionOutput));
     } catch (error) {
       next(error);
     }
@@ -82,7 +91,29 @@ export class NoteVersionController {
         data,
         userId!
       );
-      res.status(200).json(noteVersionOutput);
+      res.status(200).json(mapToNoteVersionResponse(noteVersionOutput));
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async listNoteVersions(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const userId = req.auth?.userId;
+      const { noteId } = req.params;
+      if (!noteId) throw new BadRequestError("Note id required");
+
+      const noteVersionsOutput = await this.listVersionsOfNoteUsecase.execute(
+        noteId,
+        userId!
+      );
+      res
+        .status(200)
+        .json(
+          noteVersionsOutput.map((noteVersionOutput) =>
+            mapToNoteVersionResponse(noteVersionOutput)
+          )
+        );
     } catch (error) {
       next(error);
     }

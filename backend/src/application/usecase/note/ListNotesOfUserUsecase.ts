@@ -10,13 +10,13 @@ export class ListNotesOfUserUsecase {
   ) {}
 
   async execute(userId: string): Promise<NoteOutputDTO[]> {
-    const user = await this.userRepo.getUserId(userId);
+    const user = await this.userRepo.getUserById(userId);
     if (!user) throw new NotFoundError("User not found!");
 
     const notes = await this.noteRepo.listNotesOfUser(userId);
     const notesOutput: NoteOutputDTO[] = [];
     for (const note of notes) {
-      const owner = await this.userRepo.getUserId(note.ownerId);
+      const owner = await this.userRepo.getUserById(note.ownerId);
       notesOutput.push({ note: note, owner: owner });
     }
     return notesOutput;

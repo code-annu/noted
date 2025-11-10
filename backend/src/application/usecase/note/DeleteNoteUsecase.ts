@@ -12,7 +12,7 @@ export class DeleteNoteUsecase {
   ) {}
 
   async execute(noteId: string, userId: string): Promise<NoteOutputDTO> {
-    const user = await this.userRepo.getUserId(userId);
+    const user = await this.userRepo.getUserById(userId);
     if (!user) throw new NotFoundError("User not found!");
 
     const note = await this.noteRepo.getNote(noteId);
@@ -22,7 +22,7 @@ export class DeleteNoteUsecase {
       throw new ForbiddenError("You are not authorized to delete this note.");
     }
 
-    const owner = await this.userRepo.getUserId(note.ownerId);
+    const owner = await this.userRepo.getUserById(note.ownerId);
 
     const deletedNote = await this.noteRepo.deleteNote(noteId);
     if (!deletedNote) {

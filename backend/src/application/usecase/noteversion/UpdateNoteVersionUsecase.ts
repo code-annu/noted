@@ -22,7 +22,7 @@ export class UpdateNoteVersionUsecase {
     updates: NoteVersionUpdateInputDTO,
     userId: string
   ): Promise<NoteVersionOutputDTO> {
-    const user = await this.userRepo.getUserId(userId);
+    const user = await this.userRepo.getUserById(userId);
     if (!user) throw new NotFoundError("User not found!");
 
     const noteVersion = await this.noteVersionRepo.getNoteVersion(
@@ -45,6 +45,6 @@ export class UpdateNoteVersionUsecase {
       throw new DatabaseError("Failed to update note version");
     }
 
-    return { ...updatedNoteVersion };
+    return { noteVersion: updatedNoteVersion, createdBy: user };
   }
 }

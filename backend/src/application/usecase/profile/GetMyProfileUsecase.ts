@@ -6,7 +6,7 @@ export class GetMyProfileUsecase {
   constructor(private readonly userRepo: IUserRepository) {}
 
   async execute(userId: string): Promise<User> {
-    const user = await this.userRepo.getUserId(userId);
+    const user = await this.userRepo.getUserById(userId);
     if (!user) {
       throw new NotFoundError("User not found!");
     }

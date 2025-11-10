@@ -9,7 +9,7 @@ export class RefreshTokenUsecase {
 
   async execute(token: string): Promise<AuthOutputDTO> {
     const decodedData = verifyRefreshToken(token);
-    const user = await this.userRepo.getUserId(decodedData.userId);
+    const user = await this.userRepo.getUserById(decodedData.userId);
     if (user == null) {
       throw new NotFoundError(
         `User not found! Account my be deleted or deactivated`

@@ -7,19 +7,31 @@ import DangerButton from "../../components/common/buttons/DangerButton";
 import TextInput from "../../components/common/inputs/TextInputField";
 import ErrorMessage from "../../components/common/messages/ErrorMessage";
 import { AppRoute } from "../../../router";
+import useNoteVersion from "../../../application/hooks/use-note-version";
+import NoteVersionView from "../../components/notes/NoteVersionView";
+import type { NoteVersion } from "../../../domain/entities/note-version";
+import NoteVersionDetails from "./NoteVersionDetails";
 
 function EditNotePage() {
   const { noteId } = useParams();
+
   const { note, error, getNote, updateNote, deleteNote } = useNote();
+  const { createNoteVersion, listNoteVersions, noteVersions } =
+    useNoteVersion();
 
   const [title, setTitle] = useState("");
   const [currentContent, setCurrentContent] = useState("");
+  const [noteVersionDetails, setNoteVersionDetails] =
+    useState<NoteVersion | null>(null);
 
   const navigateTo = useNavigate();
 
   useEffect(() => {
-    if (noteId) getNote(noteId);
-  },[]);
+    if (noteId) {
+      getNote(noteId);
+      listNoteVersions(noteId);
+    }
+  }, [noteId]);
 
   useEffect(() => {
     if (note) {
@@ -38,8 +50,15 @@ function EditNotePage() {
     });
   };
 
-  const handleSaveNewVersion = () => {
-    alert("Save as new version clicked. Implement logic.");
+  const handleSaveNewVersion = async () => {
+    await updateNote(noteId!, { title: title, content: currentContent });
+    createNoteVersion({
+      noteId: noteId!,
+      content: currentContent,
+    }).then(() => {
+      alert("Note is saved as new version.");
+      listNoteVersions(noteId!); // Refresh versions after creating new one
+    });
   };
 
   const handleDelete = () => {
@@ -101,6 +120,29 @@ function EditNotePage() {
           required
         />
         <ErrorMessage message={error} />
+      </div>
+
+      <div className="mt-10">
+        <h2 className="text-2xl font-semibold mb-4 text-gray-800">
+          Other versions for this note
+        </h2>
+        {noteVersions.length === 0 ? (
+          <p className="text-gray-600">There are no versions for this note.</p>
+        ) : (
+          <div className="grid grid-cols-2 gap-4">
+            {noteVersions.map((version: NoteVersion) => (
+              <NoteVersionView
+                key={version.versionNumber}
+                noteVersion={version}
+                onNoteVersionClick={setNoteVersionDetails}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="mt-10">
+        <NoteVersionDetails noteVersion={noteVersionDetails} />
       </div>
     </div>
   );

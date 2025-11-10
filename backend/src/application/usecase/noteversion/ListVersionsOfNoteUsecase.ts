@@ -16,7 +16,7 @@ export class ListVersionsOfNoteUsecase {
     noteId: string,
     userId: string
   ): Promise<NoteVersionOutputDTO[]> {
-    const user = await this.userRepo.getUserId(userId);
+    const user = await this.userRepo.getUserById(userId);
     if (!user) throw new NotFoundError("User not found!");
 
     const note = await this.noteRepo.getNote(noteId);
@@ -29,9 +29,16 @@ export class ListVersionsOfNoteUsecase {
     }
 
     const noteVersions = await this.noteVersionRepo.listAllNoteVersions(noteId);
+    const noteVersionsOutput: NoteVersionOutputDTO[] = [];
 
-    return noteVersions.map((noteVersion) => {
-      return { ...noteVersion };
-    });
+    for (const noteVersion of noteVersions) {
+      const createdBy = await this.userRepo.getUserById(noteVersion.createdBy);
+      noteVersionsOutput.push({
+        noteVersion: noteVersion,
+        createdBy: createdBy,
+      });
+    }
+
+    return noteVersionsOutput;
   }
 }

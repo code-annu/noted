@@ -20,7 +20,7 @@ const NotesPage: React.FC = () => {
 
   useEffect(() => {
     listMyNotes();
-  }, [listMyNotes]);
+  },[]);
 
   const handleCreateNewNote = () => {
     createNote({ title: "Untitled", content: "" });

@@ -14,7 +14,7 @@ export class GetNoteVersionUsecase {
     noteVersionId: string,
     userId: string
   ): Promise<NoteVersionOutputDTO> {
-    const user = await this.userRepo.getUserId(userId);
+    const user = await this.userRepo.getUserById(userId);
     if (!user) throw new NotFoundError("User not found!");
 
     const noteVersion = await this.noteVersionRepo.getNoteVersion(
@@ -28,6 +28,8 @@ export class GetNoteVersionUsecase {
       );
     }
 
-    return { ...noteVersion };
+    // const createdBy = await this.userRepo.getUserById(noteVersion.createdBy); // For future call when note have multiple collaborators
+
+    return { noteVersion: noteVersion, createdBy: user };
   }
 }
