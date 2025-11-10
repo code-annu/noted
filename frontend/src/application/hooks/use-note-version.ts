@@ -12,6 +12,7 @@ function useNoteVersion() {
   const noteVersionRepo = new NoteVersionRepository();
   const [error, setError] = useState<string | null>(null);
   const [noteVersions, setNoteVersions] = useState<NoteVersion[]>([]);
+  const [creatingNoteVersion, setCreatingNoteVersion] = useState(false);
 
   const listNoteVersions = async (noteId: string) => {
     const listVersionsOfNoteUsecase = new ListVersionsOfNoteUsecase(
@@ -31,15 +32,23 @@ function useNoteVersion() {
       noteVersionRepo
     );
     try {
+      setCreatingNoteVersion(true);
       const version = await createNoteVersionUsecase.execute(noteVersionCreate);
       console.log(version);
       setNoteVersions((prev) => [...prev, version]);
     } catch (err) {
       handleError(error, setError);
     }
+    setCreatingNoteVersion(false);
   };
 
-  return { noteVersions, listNoteVersions, createNoteVersion, error };
+  return {
+    noteVersions,
+    listNoteVersions,
+    createNoteVersion,
+    error,
+    creatingNoteVersion,
+  };
 }
 
 export default useNoteVersion;

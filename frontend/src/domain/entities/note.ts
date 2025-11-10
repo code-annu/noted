@@ -2,10 +2,13 @@ export interface Note {
   id: string;
   title: string;
   currentContent: string;
-  ownerId: string;
   isPublic: Boolean;
   createdAt: Date;
   updatedAt: Date;
+  owner: {
+    username: string;
+    fullname: string;
+  };
 }
 
 export interface NoteCreate {

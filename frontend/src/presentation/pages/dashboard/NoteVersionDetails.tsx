@@ -5,38 +5,33 @@ type NoteVersionDetailsProps = {
   noteVersion?: NoteVersion | null;
 };
 
-const NoteVersionDetails: React.FC<NoteVersionDetailsProps> = ({
-  noteVersion,
-}) => {
-  if (noteVersion == null) return;
+const NoteVersionDetails: React.FC<NoteVersionDetailsProps> = ({ noteVersion }) => {
+  if (!noteVersion) return null;
 
   return (
-    <div className="p-6 border rounded bg-white shadow-md max-w-4xl mx-auto">
-      <h2 className="text-2xl font-semibold mb-4">
+    <div className="p-8 border rounded-lg bg-white shadow-lg max-w-4xl mx-auto">
+      <h2 className="text-3xl font-extrabold mb-6 border-b pb-2 border-gray-200">
         Version {noteVersion.versionNumber} Details
       </h2>
-      <p className="mb-2">
-        <strong>Version ID:</strong> {noteVersion.id}
-      </p>
-      <p className="mb-2">
-        <strong>Note ID:</strong> {noteVersion.noteId}
-      </p>
-      <p className="mb-2">
-        <strong>Created By:</strong> {noteVersion.createdBy}
-      </p>
-      <p className="mb-2">
-        <strong>Created At:</strong>{" "}
-        {new Date(noteVersion.createdAt).toLocaleString()}
-      </p>
-      <p className="mb-2">
-        <strong>Updated At:</strong>{" "}
-        {new Date(noteVersion.updatedAt).toLocaleString()}
-      </p>
-      <div className="mt-4">
-        <h3 className="font-semibold mb-2">Content:</h3>
-        <div className="whitespace-pre-wrap bg-gray-100 p-4 rounded border border-gray-300 text-gray-800">
-          {noteVersion.content}
+
+      <div className="grid grid-cols-1 gap-y-4 text-gray-700">
+        <div>
+          <p>
+            <span className="font-semibold text-gray-900">Created By:</span>{" "}
+            {noteVersion.createdBy ? `${noteVersion.createdBy.fullname} (${noteVersion.createdBy.username})` : "Unknown"}
+          </p>
+          <p>
+            <span className="font-semibold text-gray-900">Created At:</span>{" "}
+            {new Date(noteVersion.createdAt).toLocaleString()}
+          </p>
         </div>
+      </div>
+
+      <div className="mt-8">
+        <h3 className="text-xl font-semibold mb-3">Content:</h3>
+        <pre className="whitespace-pre-wrap bg-gray-50 p-6 rounded-lg border border-gray-300 text-gray-800 font-mono shadow-sm">
+          {noteVersion.content}
+        </pre>
       </div>
     </div>
   );

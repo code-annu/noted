@@ -17,8 +17,12 @@ function EditNotePage() {
 
   const { note, error, getNote, updateNote, deleteNote, updating, deleting } =
     useNote();
-  const { createNoteVersion, listNoteVersions, noteVersions } =
-    useNoteVersion();
+  const {
+    createNoteVersion,
+    creatingNoteVersion,
+    listNoteVersions,
+    noteVersions,
+  } = useNoteVersion();
 
   const [title, setTitle] = useState("");
   const [currentContent, setCurrentContent] = useState("");
@@ -51,8 +55,8 @@ function EditNotePage() {
     });
   };
 
-  const handleSaveNewVersion = async () => {
-    await updateNote(noteId!, { title: title, content: currentContent });
+  const handleSaveNewVersion = () => {
+    updateNote(noteId!, { title: title, content: currentContent });
     createNoteVersion({
       noteId: noteId!,
       content: currentContent,
@@ -91,6 +95,7 @@ function EditNotePage() {
             onClick={handleSaveNewVersion}
             width="w-48"
             height="py-2"
+            disabled={creatingNoteVersion}
           />
           <DangerButton
             text="Delete"
@@ -132,7 +137,7 @@ function EditNotePage() {
         {noteVersions.length === 0 ? (
           <p className="text-gray-600">There are no versions for this note.</p>
         ) : (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="flex flex-wrap gap-6 justify-start">
             {noteVersions.map((version: NoteVersion) => (
               <NoteVersionView
                 key={version.versionNumber}

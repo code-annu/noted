@@ -37,7 +37,6 @@ function useNote() {
     const getMyNotesUsecase = new ListMyNotesUsecase(noteRepo);
     try {
       const notes = await getMyNotesUsecase.execute();
-      console.log(notes);
       setMyNotes(notes);
     } catch (err) {
       console.log(err);

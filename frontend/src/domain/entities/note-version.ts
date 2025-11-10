@@ -3,9 +3,12 @@ export interface NoteVersion {
   noteId: string;
   versionNumber: number;
   content: String;
-  createdBy: string;
   createdAt: Date;
   updatedAt: Date;
+  createdBy: {
+    username: string;
+    fullname: string;
+  } | null;
 }
 
 export interface NoteVersionCreate {
