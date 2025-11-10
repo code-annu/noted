@@ -22,6 +22,14 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get("/", (req, res) => {
+  res
+    .status(200)
+    .json({
+      message: "Yes server is working and all results should be success",
+    });
+});
+
 app.use(`${BASE_API_URL}/auth`, authRouter);
 app.use(`${BASE_API_URL}/notes`, validateAuthorization, noteRouter);
 app.use(
