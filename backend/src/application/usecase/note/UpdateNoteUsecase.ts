@@ -31,6 +31,8 @@ export class UpdateNoteUsecase {
       throw new DatabaseError("Unable to update note");
     }
 
-    return { ...updatedNote };
+    const owner = await this.userRepo.getUserId(note.ownerId);
+
+    return { note: updatedNote, owner: owner };
   }
 }

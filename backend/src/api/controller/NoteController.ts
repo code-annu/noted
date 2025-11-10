@@ -10,6 +10,7 @@ import { BadRequestError } from "../../domain/error/BadRequestError";
 import { ListNotesOfUserUsecase } from "../../application/usecase/note/ListNotesOfUserUsecase";
 import { ListVersionsOfNoteUsecase } from "../../application/usecase/noteversion/ListVersionsOfNoteUsecase";
 import { INoteVersionRepository } from "../../domain/repository/INoteVersionRepository";
+import { mapToNoteResponse } from "../mapper/note-response-mapper";
 
 export class NoteController {
   private readonly createNewNoteUsecase: CreateNewNoteUsecase;
@@ -43,12 +44,12 @@ export class NoteController {
     try {
       const userId = req.auth?.userId;
       const { title, content } = req.body;
-      const note = await this.createNewNoteUsecase.execute({
+      const noteOutput = await this.createNewNoteUsecase.execute({
         title: title,
         currentContent: content,
         ownerId: userId!,
       });
-      res.status(201).json(note);
+      res.status(201).json(mapToNoteResponse(noteOutput));
     } catch (error) {
       next(error);
     }
@@ -60,8 +61,8 @@ export class NoteController {
       const { noteId } = req.params;
       if (!noteId) throw new BadRequestError("Note id required");
 
-      const noteOutputDTO = await this.getNoteUsecase.execute(noteId, userId!);
-      res.status(200).json(noteOutputDTO);
+      const noteOutput = await this.getNoteUsecase.execute(noteId, userId!);
+      res.status(200).json(mapToNoteResponse(noteOutput));
     } catch (error) {
       next(error);
     }
@@ -74,12 +75,12 @@ export class NoteController {
       if (!noteId) throw new BadRequestError("Note id required");
 
       const { title, content } = req.body;
-      const noteOutputDTO = await this.updateNoteUsecase.execute(
+      const noteOutput = await this.updateNoteUsecase.execute(
         noteId,
         { title: title, currentContent: content },
         userId!
       );
-      res.status(200).json(noteOutputDTO);
+      res.status(200).json(mapToNoteResponse(noteOutput));
     } catch (error) {
       next(error);
     }
@@ -91,11 +92,8 @@ export class NoteController {
       const { noteId } = req.params;
       if (!noteId) throw new BadRequestError("Note id required");
 
-      const noteOutputDTO = await this.deleteNoteUsecase.execute(
-        noteId,
-        userId!
-      );
-      res.status(200).json(noteOutputDTO);
+      const noteOutput = await this.deleteNoteUsecase.execute(noteId, userId!);
+      res.status(200).json(mapToNoteResponse(noteOutput));
     } catch (error) {
       next(error);
     }
@@ -104,8 +102,10 @@ export class NoteController {
   async listMyNotes(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       const userId = req.auth?.userId;
-      const notes = await this.listNotesOfUserUsecase.execute(userId!);
-      res.status(200).json(notes);
+      const notesOutput = await this.listNotesOfUserUsecase.execute(userId!);
+      res
+        .status(200)
+        .json(notesOutput.map((noteOutput) => mapToNoteResponse(noteOutput)));
     } catch (error) {
       next(error);
     }

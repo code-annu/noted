@@ -8,5 +8,5 @@ export interface NoteResponse {
   owner: {
     username: string;
     fullname: string;
-  };
+  } | null;
 }

@@ -21,6 +21,8 @@ export class GetNoteUsecase {
       throw new ForbiddenError("You are not authorized to view this note.");
     }
 
-    return { ...note };
+    const owner = await this.userRepo.getUserId(note.ownerId);
+
+    return { note: note, owner: owner };
   }
 }

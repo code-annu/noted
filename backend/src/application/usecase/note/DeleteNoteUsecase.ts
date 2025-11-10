@@ -22,11 +22,13 @@ export class DeleteNoteUsecase {
       throw new ForbiddenError("You are not authorized to delete this note.");
     }
 
+    const owner = await this.userRepo.getUserId(note.ownerId);
+
     const deletedNote = await this.noteRepo.deleteNote(noteId);
     if (!deletedNote) {
       throw new DatabaseError("Unable to delete note");
     }
 
-    return {...note}
+    return { note: deletedNote, owner: owner };
   }
 }
