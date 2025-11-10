@@ -18,11 +18,19 @@ export class NoteController {
   private readonly deleteNoteUsecase: DeleteNoteUsecase;
   private readonly listNotesOfUserUsecase: ListNotesOfUserUsecase;
 
-  constructor(noteRepo: INoteRepository, userRepo: IUserRepository) {
+  constructor(
+    noteRepo: INoteRepository,
+    userRepo: IUserRepository,
+    noteVersionRepo: INoteVersionRepository
+  ) {
     this.createNewNoteUsecase = new CreateNewNoteUsecase(noteRepo, userRepo);
     this.getNoteUsecase = new GetNoteUsecase(noteRepo, userRepo);
     this.updateNoteUsecase = new UpdateNoteUsecase(noteRepo, userRepo);
-    this.deleteNoteUsecase = new DeleteNoteUsecase(noteRepo, userRepo);
+    this.deleteNoteUsecase = new DeleteNoteUsecase(
+      noteRepo,
+      userRepo,
+      noteVersionRepo
+    );
     this.listNotesOfUserUsecase = new ListNotesOfUserUsecase(
       noteRepo,
       userRepo

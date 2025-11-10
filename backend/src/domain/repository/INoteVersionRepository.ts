@@ -16,5 +16,7 @@ export interface INoteVersionRepository {
 
   deleteNoteVersion(id: string): Promise<NoteVersion | null>;
 
+  deleteNoteVersions(noteId: string): Promise<void>;
+
   listAllNoteVersions(noteId: string): Promise<NoteVersion[]>;
 }

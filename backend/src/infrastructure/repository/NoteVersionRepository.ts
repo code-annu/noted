@@ -58,4 +58,8 @@ export class NoteVersionRepository implements INoteVersionRepository {
 
     return noteVersions;
   }
+
+  async deleteNoteVersions(noteId: string): Promise<void> {
+    await NoteVersionModel.deleteMany({ noteId: noteId });
+  }
 }
