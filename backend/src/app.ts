@@ -5,6 +5,7 @@ import { errorHandler } from "./api/middleware/handle-error";
 import { noteRouter } from "./api/router/note-router";
 import { validateAuthorization } from "./api/middleware/validate-authorization";
 import cors from "cors";
+import { noteVersionRouter } from "./api/router/note-version-router";
 
 const app = express();
 const BASE_API_URL = "/api/v1";
@@ -23,6 +24,11 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(`${BASE_API_URL}/auth`, authRouter);
 app.use(`${BASE_API_URL}/notes`, validateAuthorization, noteRouter);
+app.use(
+  `${BASE_API_URL}/noteversions`,
+  validateAuthorization,
+  noteVersionRouter
+);
 
 app.use(errorHandler);
 
