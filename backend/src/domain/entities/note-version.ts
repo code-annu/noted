@@ -1,8 +1,20 @@
 export interface NoteVersion {
-  _id: string;
-  documentId: string; // ref to Documents._id
-  versionNumber: Number; // e.g., 1, 2, 3…
+  id: string;
+  noteId: string; // ref to Documents._id
+  versionNumber: number; // e.g., 1, 2, 3…
   content: String; // snapshot of content at that version
-  createdAt: Date;
   createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface NoteVersionCreate {
+  noteId: string;
+  versionNumber: number;
+  content: string;
+  createdBy: string;
+}
+
+export interface NoteVersionUpdate {
+  content: string | undefined;
 }

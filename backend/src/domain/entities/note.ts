@@ -1,7 +1,7 @@
 export interface Note {
   id: string;
   title: string;
-  currentContent: String;
+  currentContent: string;
   ownerId: string;
   isPublic: Boolean;
   createdAt: Date;
