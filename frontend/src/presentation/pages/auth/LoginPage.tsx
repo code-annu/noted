@@ -9,7 +9,7 @@ import { AppRoute } from "../../../router";
 import ErrorMessage from "../../components/common/messages/ErrorMessage";
 
 function LoginPage() {
-  const { login, error, user } = useAuth();
+  const { login, error, user, loading } = useAuth();
   const navigateTo = useNavigate();
 
   const [credentials, setCredentials] = useState({
@@ -57,7 +57,7 @@ function LoginPage() {
           placeholder="Enter your password"
           required
         />
-        <PrimaryButton text="Login" />
+        <PrimaryButton text="Login" disabled={loading} />
       </form>
       <ErrorMessage message={error} />
 

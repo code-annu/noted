@@ -15,10 +15,12 @@ function useAuth() {
   const authRepo = new AuthRepository();
   const { user, setUser } = useAuthContext();
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const signup = async (signupCred: SignupCredential) => {
     const signupUsecase = new SignupUsecase(authRepo);
     try {
+      setLoading(true);
       const authUser = await signupUsecase.execute(signupCred);
       setUser(authUser);
       StorageUtil.saveAccessToken(authUser.accessToken);
@@ -26,11 +28,13 @@ function useAuth() {
     } catch (err) {
       handleError(err);
     }
+    setLoading(false);
   };
 
   const login = async (loginCred: LoginCredential) => {
     const loginUsecase = new LoginUsecase(authRepo);
     try {
+      setLoading(true);
       const authUser = await loginUsecase.execute(loginCred);
       setUser(authUser);
       StorageUtil.saveAccessToken(authUser.accessToken);
@@ -38,6 +42,7 @@ function useAuth() {
     } catch (err) {
       handleError(err);
     }
+    setLoading(false);
   };
 
   const refreshToken = async (): Promise<boolean> => {
@@ -67,7 +72,7 @@ function useAuth() {
     }
   };
 
-  return { user, error, signup, login, refreshToken, logout };
+  return { user, error, signup, login, refreshToken, logout, loading };
 }
 
 export default useAuth;

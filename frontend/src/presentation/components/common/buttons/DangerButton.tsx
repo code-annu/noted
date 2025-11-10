@@ -3,9 +3,10 @@ import React from "react";
 interface DangerButtonProps {
   text: string;
   onClick?: () => void;
-  width?: string;  // Tailwind width classes or custom CSS e.g. "w-24"
-  height?: string; // Tailwind height classes or custom CSS e.g. "py-2"
+  width?: string;
+  height?: string;
   className?: string;
+  disabled?: boolean;
 }
 
 const DangerButton: React.FC<DangerButtonProps> = ({
@@ -14,11 +15,20 @@ const DangerButton: React.FC<DangerButtonProps> = ({
   width = "w-full",
   height = "py-2",
   className = "",
+  disabled = false,
 }) => {
-  const styleClasses = `${width} ${height} bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors ${className} cursor-pointer`;
+  const styleClasses = `
+    ${width} ${height} rounded-md transition-colors cursor-pointer
+    ${disabled ? "bg-gray-400 text-gray-700 cursor-not-allowed" : "bg-red-600 text-white hover:bg-red-700"}
+    ${className}
+  `;
 
   return (
-    <button className={styleClasses} onClick={onClick}>
+    <button
+      className={styleClasses.trim().replace(/\s+/g, " ")}
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
+    >
       {text}
     </button>
   );

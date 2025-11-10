@@ -7,7 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AppRoute } from "../../../router";
 
 function SignupPage() {
-  const { user, signup, error } = useAuth();
+  const { user, signup, loading, error } = useAuth();
   const navigateTo = useNavigate();
 
   const [form, setForm] = useState({
@@ -85,7 +85,7 @@ function SignupPage() {
           isTextarea
           rows={3}
         />
-        <PrimaryButton text="Signup" />
+        <PrimaryButton text="Signup" disabled={loading} />
       </form>
       {error && (
         <div className="mt-4 text-red-600 text-center font-medium">{error}</div>

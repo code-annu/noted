@@ -6,6 +6,7 @@ interface PrimaryButtonProps {
   width?: string; // Tailwind width classes or custom CSS width e.g. "w-24" or "100px"
   height?: string; // Tailwind height classes or custom CSS height e.g. "h-12" or "50px"
   className?: string; // optional additional classes
+  disabled?: boolean; // new prop for disabled state
 }
 
 const PrimaryButton: React.FC<PrimaryButtonProps> = ({
@@ -14,11 +15,24 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
   width = "w-full",
   height = "py-2",
   className = "",
+  disabled = false,
 }) => {
-  const styleClasses = `${width} ${height} bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors ${className} cursor-pointer`;
+  const styleClasses = `
+    ${width} ${height} rounded-md transition-colors cursor-pointer 
+    ${
+      disabled
+        ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+        : "bg-blue-600 text-white hover:bg-blue-700"
+    }
+    ${className}
+  `;
 
   return (
-    <button className={styleClasses} onClick={onClick}>
+    <button
+      className={styleClasses.trim().replace(/\s+/g, " ")}
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
+    >
       {text}
     </button>
   );
