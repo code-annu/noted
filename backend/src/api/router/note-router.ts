@@ -7,11 +7,13 @@ import {
   NoteUpdateInputSchema,
 } from "../schema/note-schema";
 import { validateRequestBody } from "../middleware/validate-request-body";
+import { NoteVersionRepository } from "../../infrastructure/repository/NoteVersionRepository";
 
 export const noteRouter = Router({ mergeParams: true });
 const noteController = new NoteController(
   new NoteRepository(),
-  new UserRepository()
+  new UserRepository(),
+  new NoteVersionRepository()
 );
 
 noteRouter.post(
@@ -31,3 +33,8 @@ noteRouter.patch(
 noteRouter.delete("/:noteId", noteController.deleteNote.bind(noteController));
 
 noteRouter.get("/", noteController.listMyNotes.bind(noteController));
+
+noteRouter.get(
+  "/:noteId/versions",
+  noteController.listNoteVersions.bind(noteController)
+);
