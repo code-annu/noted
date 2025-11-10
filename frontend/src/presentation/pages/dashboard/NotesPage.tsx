@@ -8,8 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { AppRoute } from "../../../router";
 
 const NotesPage: React.FC = () => {
-  const { listMyNotes, myNotes } = useNote();
-  const { createNote, createdNote } = useNote();
+  const { listMyNotes, myNotes, createdNote, createNote, creating } = useNote();
   const navigateTo = useNavigate();
 
   useEffect(() => {
@@ -20,7 +19,7 @@ const NotesPage: React.FC = () => {
 
   useEffect(() => {
     listMyNotes();
-  },[]);
+  }, []);
 
   const handleCreateNewNote = () => {
     createNote({ title: "Untitled", content: "" });
@@ -45,17 +44,18 @@ const NotesPage: React.FC = () => {
           text="Create New Note"
           onClick={handleCreateNewNote}
           width="w-48"
+          disabled={creating}
         />
       </div>
 
       {/* Notes grid */}
       <div className="flex flex-wrap gap-6 justify-start">
         {myNotes.map((note: Note) => (
-          <div key={note.id} className="flex-shrink-0">
+          <div key={note.id} className="shrink-0">
             <NoteView note={note} />
           </div>
         ))}
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           <CreateNoteComp />
         </div>
       </div>

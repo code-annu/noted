@@ -15,7 +15,8 @@ import NoteVersionDetails from "./NoteVersionDetails";
 function EditNotePage() {
   const { noteId } = useParams();
 
-  const { note, error, getNote, updateNote, deleteNote } = useNote();
+  const { note, error, getNote, updateNote, deleteNote, updating, deleting } =
+    useNote();
   const { createNoteVersion, listNoteVersions, noteVersions } =
     useNoteVersion();
 
@@ -83,6 +84,7 @@ function EditNotePage() {
             onClick={handleSave}
             width="w-24"
             height="py-2"
+            disabled={updating}
           />
           <SecondaryButton
             text="Save as New Version"
@@ -95,6 +97,7 @@ function EditNotePage() {
             onClick={handleDelete}
             width="w-24"
             height="py-2"
+            disabled={deleting}
           />
         </div>
       </div>
