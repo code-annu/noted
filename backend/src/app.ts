@@ -6,6 +6,7 @@ import { noteRouter } from "./api/router/note-router";
 import { validateAuthorization } from "./api/middleware/validate-authorization";
 import cors from "cors";
 import { noteVersionRouter } from "./api/router/note-version-router";
+import { collaborationRouter } from "./api/router/collaboration-router";
 
 const app = express();
 const BASE_API_URL = "/api/v1";
@@ -37,6 +38,7 @@ app.use(
   validateAuthorization,
   noteVersionRouter
 );
+app.use(`${BASE_API_URL}/collaborations`, validateAuthorization, collaborationRouter);
 
 app.use(errorHandler);
 
