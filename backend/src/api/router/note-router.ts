@@ -9,6 +9,9 @@ import {
 import { validateRequestBody } from "../middleware/validate-request-body";
 import { NoteVersionRepository } from "../../infrastructure/repository/NoteVersionRepository";
 import { NoteVersionController } from "../controller/NoteVersionController";
+import { CollaborationController } from "../controller/CollaborationController";
+import { CollaborationRepository } from "../../infrastructure/repository/CollaborationRepository";
+import { CollaborationCreateInputSchema } from "../schema/collaboration-schema";
 
 export const noteRouter = Router({ mergeParams: true });
 
@@ -22,6 +25,12 @@ const noteVersionController = new NoteVersionController(
   new NoteVersionRepository(),
   new NoteRepository(),
   new UserRepository()
+);
+
+const collaborationController = new CollaborationController(
+  new UserRepository(),
+  new NoteRepository(),
+  new CollaborationRepository()
 );
 
 noteRouter.post(
@@ -45,4 +54,10 @@ noteRouter.get("/", noteController.listMyNotes.bind(noteController));
 noteRouter.get(
   "/:noteId/versions",
   noteVersionController.listNoteVersions.bind(noteVersionController)
+);
+
+noteRouter.post(
+  "/:noteId/invite",
+  validateRequestBody(CollaborationCreateInputSchema),
+  collaborationController.postInviteCollaboration.bind(collaborationController)
 );
