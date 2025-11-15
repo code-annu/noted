@@ -36,7 +36,10 @@ export class UpdateNoteUsecase {
       throw new ForbiddenError("You are not authorized to update this note.");
     }
 
-    if (filteredCollaborations[0]?.role !== CollaborationRole.EDITOR) {
+    if (
+      filteredCollaborations.length > 0 &&
+      filteredCollaborations[0]!.role !== CollaborationRole.EDITOR
+    ) {
       throw new ForbiddenError(
         "You cannot update this note with role as 'viewer'"
       );
