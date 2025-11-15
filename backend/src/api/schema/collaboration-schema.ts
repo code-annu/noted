@@ -10,5 +10,4 @@ export const CollaborationCreateInputSchema = z.object({
 // Collaboration Update Input Schema
 export const CollaborationUpdateInputSchema = z.object({
   role: z.enum([CollaborationRole.VIEWER, CollaborationRole.EDITOR]).optional(),
-  accepted: z.boolean().optional(),
 });

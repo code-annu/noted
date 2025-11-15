@@ -41,7 +41,7 @@ export class CollaborationRepository implements ICollaborationRepository {
 
   async listCollaborationsOfUser(userId: string): Promise<Collaboration[]> {
     const collaborations = await CollaborationModel.find({
-      $or: [{ userId: userId }, { invitedBy: userId }],
+      userId: userId,
     });
     return collaborations.map((collaborationDocument) =>
       mapToCollaboration(collaborationDocument)
@@ -50,7 +50,7 @@ export class CollaborationRepository implements ICollaborationRepository {
 
   async listCollaborationsOfNote(noteId: string): Promise<Collaboration[]> {
     const collaborations = await CollaborationModel.find({ notedId: noteId });
-    
+
     return collaborations.map((collaborationDocument) =>
       mapToCollaboration(collaborationDocument)
     );
