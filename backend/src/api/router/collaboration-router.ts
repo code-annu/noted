@@ -11,7 +11,18 @@ const collaborationController = new CollaborationController(
   new CollaborationRepository()
 );
 
+collaborationRouter.get(
+  "/",
+  collaborationController.getCollaborations.bind(collaborationController)
+);
+
 collaborationRouter.patch(
   "/:collaborationId/accept",
   collaborationController.patchAcceptCollaboration.bind(collaborationController)
+);
+
+
+collaborationRouter.delete(
+  "/:collaborationId/reject",
+  collaborationController.patchRejectCollaborationInvitation.bind(collaborationController)
 );

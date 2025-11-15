@@ -61,3 +61,8 @@ noteRouter.post(
   validateRequestBody(CollaborationCreateInputSchema),
   collaborationController.postInviteCollaboration.bind(collaborationController)
 );
+
+noteRouter.get(
+  "/:noteId/collaborations",
+  collaborationController.getNoteCollaborations.bind(collaborationController)
+);

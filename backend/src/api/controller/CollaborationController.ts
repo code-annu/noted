@@ -8,10 +8,16 @@ import { AuthRequest } from "../middleware/validate-authorization";
 import { BadRequestError } from "../../domain/error/BadRequestError";
 import { CollaborationCreateInputDTO } from "../../application/dto/collaboration-dto";
 import { mapToCollaborationResponse } from "../mapper/collaboration-response-mapper";
+import { ListMyCollaborationsUsecase } from "../../application/usecase/collaboration/ListMyCollaborationsUsecase";
+import { ListNoteCollaborationsUsecase } from "../../application/usecase/collaboration/ListNoteCollaborationsUsecase";
+import { RejectCollaborationInvitationUsecase } from "../../application/usecase/collaboration/RejectCollaborationInvitationUsecase";
 
 export class CollaborationController {
   private readonly inviteCollaboratorUsecase: InviteCollaboratorUsecase;
   private readonly acceptCollaborationInvitation: AcceptCollaborationInvitationUsecase;
+  private readonly listMyCollaborations: ListMyCollaborationsUsecase;
+  private readonly listNoteCollaborations: ListNoteCollaborationsUsecase;
+  private readonly rejectCollaborationInvitaion: RejectCollaborationInvitationUsecase;
 
   constructor(
     userRepo: IUserRepository,
@@ -30,6 +36,40 @@ export class CollaborationController {
         noteRepo,
         collaborationRepo
       );
+
+    this.listMyCollaborations = new ListMyCollaborationsUsecase(
+      userRepo,
+      noteRepo,
+      collaborationRepo
+    );
+
+    this.listNoteCollaborations = new ListNoteCollaborationsUsecase(
+      userRepo,
+      noteRepo,
+      collaborationRepo
+    );
+
+    this.rejectCollaborationInvitaion =
+      new RejectCollaborationInvitationUsecase(userRepo, collaborationRepo);
+  }
+
+  async getCollaborations(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const userId = req.auth?.userId;
+      const collaborationOutputs = await this.listMyCollaborations.execute(
+        userId!
+      );
+
+      res
+        .status(200)
+        .json(
+          collaborationOutputs.map((collaborationOutput) =>
+            mapToCollaborationResponse(collaborationOutput)
+          )
+        );
+    } catch (error) {
+      next(error);
+    }
   }
 
   async postInviteCollaboration(
@@ -74,6 +114,56 @@ export class CollaborationController {
         );
 
       res.status(200).json(mapToCollaborationResponse(collaborationOutput));
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getNoteCollaborations(
+    req: AuthRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const userId = req.auth?.userId;
+      const { noteId } = req.params;
+      if (!noteId) {
+        throw new BadRequestError("Note id is required in path parameter");
+      }
+      const collaborationOutputs = await this.listNoteCollaborations.execute(
+        noteId,
+        userId!
+      );
+
+      res
+        .status(200)
+        .json(
+          collaborationOutputs.map((collaborationOutput) =>
+            mapToCollaborationResponse(collaborationOutput)
+          )
+        );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async patchRejectCollaborationInvitation(
+    req: AuthRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const userId = req.auth?.userId;
+      const { collaborationId } = req.params;
+      if (!collaborationId) {
+        throw new BadRequestError(
+          "Collaboration id required in path parameter"
+        );
+      }
+
+      await this.rejectCollaborationInvitaion.execute(collaborationId, userId!);
+
+      res.status(200).json({ message: "Collaboration is rejected." });
     } catch (error) {
       next(error);
     }
