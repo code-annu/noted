@@ -1,3 +1,4 @@
+import { ConflictError } from "../../../domain/error/ConflictError";
 import { ForbiddenError } from "../../../domain/error/ForbiddenError";
 import { NotFoundError } from "../../../domain/error/NotFoundError";
 import { ICollaborationRepository } from "../../../domain/repository/ICollaborationRepository";
@@ -32,6 +33,19 @@ export class InviteCollaboratorUsecase {
     if (note.ownerId !== invitedBy) {
       throw new ForbiddenError(
         "You are not authorized to invite collaborators"
+      );
+    }
+
+    const collaborations =
+      await this.collaborationRepo.listCollaborationsOfNote(note.id);
+
+    const filteredCollaborations = collaborations.filter(
+      (collaboration) => collaboration.userId === invitee.id
+    );
+
+    if (filteredCollaborations.length > 0) {
+      throw new ConflictError(
+        `${input.username} is already a collaborator in this note.`
       );
     }
 
