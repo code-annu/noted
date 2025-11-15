@@ -18,7 +18,8 @@ export const noteRouter = Router({ mergeParams: true });
 const noteController = new NoteController(
   new NoteRepository(),
   new UserRepository(),
-  new NoteVersionRepository()
+  new NoteVersionRepository(),
+  new CollaborationRepository()
 );
 
 const noteVersionController = new NoteVersionController(

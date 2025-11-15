@@ -10,6 +10,7 @@ import { BadRequestError } from "../../domain/error/BadRequestError";
 import { ListNotesOfUserUsecase } from "../../application/usecase/note/ListNotesOfUserUsecase";
 import { INoteVersionRepository } from "../../domain/repository/INoteVersionRepository";
 import { mapToNoteResponse } from "../mapper/note-response-mapper";
+import { ICollaborationRepository } from "../../domain/repository/ICollaborationRepository";
 
 export class NoteController {
   private readonly createNewNoteUsecase: CreateNewNoteUsecase;
@@ -21,11 +22,20 @@ export class NoteController {
   constructor(
     noteRepo: INoteRepository,
     userRepo: IUserRepository,
-    noteVersionRepo: INoteVersionRepository
+    noteVersionRepo: INoteVersionRepository,
+    collaborationRepo: ICollaborationRepository
   ) {
     this.createNewNoteUsecase = new CreateNewNoteUsecase(noteRepo, userRepo);
-    this.getNoteUsecase = new GetNoteUsecase(noteRepo, userRepo);
-    this.updateNoteUsecase = new UpdateNoteUsecase(noteRepo, userRepo);
+    this.getNoteUsecase = new GetNoteUsecase(
+      noteRepo,
+      userRepo,
+      collaborationRepo
+    );
+    this.updateNoteUsecase = new UpdateNoteUsecase(
+      noteRepo,
+      userRepo,
+      collaborationRepo
+    );
     this.deleteNoteUsecase = new DeleteNoteUsecase(
       noteRepo,
       userRepo,
