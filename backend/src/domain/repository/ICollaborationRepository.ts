@@ -17,4 +17,8 @@ export interface ICollaborationRepository {
   ): Promise<Collaboration | null>;
 
   deleteCollaboration(id: string): Promise<Collaboration | null>;
+
+  listCollaborationsOfUser(userId: string): Promise<Collaboration[]>;
+
+  listCollaborationsOfNote(noteId: string): Promise<Collaboration[]>;
 }

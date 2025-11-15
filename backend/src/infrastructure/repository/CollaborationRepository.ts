@@ -38,4 +38,21 @@ export class CollaborationRepository implements ICollaborationRepository {
     const collaborator = await CollaborationModel.findByIdAndDelete(id);
     return collaborator ? mapToCollaboration(collaborator) : null;
   }
+
+  async listCollaborationsOfUser(userId: string): Promise<Collaboration[]> {
+    const collaborations = await CollaborationModel.find({
+      $or: [{ userId: userId }, { invitedBy: userId }],
+    });
+    return collaborations.map((collaborationDocument) =>
+      mapToCollaboration(collaborationDocument)
+    );
+  }
+
+  async listCollaborationsOfNote(noteId: string): Promise<Collaboration[]> {
+    const collaborations = await CollaborationModel.find({ notedId: noteId });
+    
+    return collaborations.map((collaborationDocument) =>
+      mapToCollaboration(collaborationDocument)
+    );
+  }
 }
