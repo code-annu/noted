@@ -1,38 +1,12 @@
 import type React from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../app/store";
-import { useEffect, useState } from "react";
-import useAuth from "../../../application/hook/useAuth";
-import { CenteredLoadingMessage } from "../../components/common/messages/CenteredLoadingMessage";
-import { useNavigate } from "react-router-dom";
-import { AppRoute } from "../../../router";
 
 export const HomePage: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
-  const { refreshToken } = useAuth();
-  const [refreshingToken, setRefreshingToken] = useState(false);
-  const navigateTo = useNavigate();
-
-  useEffect(() => {
-    const refresh = async () => {
-      setRefreshingToken(true);
-      try {
-        await refreshToken();
-      } catch (err) {
-        console.log(err);
-      }
-      setRefreshingToken(false);
-    };
-    refresh();
-  }, []);
-
-  if (refreshingToken) {
-    return <CenteredLoadingMessage />;
-  }
 
   if (!user) {
-    navigateTo(AppRoute.LOGIN);
-    return;
+    return <div></div>;
   }
 
   const firstName = user.fullname.split(" ")[0] || "User";
