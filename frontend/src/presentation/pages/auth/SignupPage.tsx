@@ -1,106 +1,119 @@
-import React, { useEffect, useState } from "react";
-import PrimaryButton from "../../components/common/buttons/PrimaryButton";
-import PasswordInput from "../../components/common/inputs/PasswordInputField";
+import type React from "react";
+import { useState } from "react";
+import type { SignupCredential } from "../../../domain/entities/user";
 import TextInput from "../../components/common/inputs/TextInputField";
-import useAuth from "../../../application/hooks/use-auth";
+import PasswordInput from "../../components/common/inputs/PasswordInputField";
+import PrimaryButton from "../../components/common/buttons/PrimaryButton";
 import { Link, useNavigate } from "react-router-dom";
 import { AppRoute } from "../../../router";
+import useAuth from "../../../application/hook/useAuth";
+import { handleError } from "../../../util/error-handler-util";
+import ErrorMessage from "../../components/common/messages/ErrorMessage";
 
-function SignupPage() {
-  const { user, signup, loading, error } = useAuth();
+const SignupPage: React.FC = () => {
+  const { signup } = useAuth();
+
+  const [signing, setSigning] = useState(false);
+  const [signupError, setSignupError] = useState<string | null>(null);
   const navigateTo = useNavigate();
 
-  const [form, setForm] = useState({
-    fullname: "",
+  const [signupData, setSignupData] = useState<SignupCredential>({
     username: "",
     password: "",
+    fullname: "",
     profilePictureUrl: "",
     bio: "",
   });
 
-  const handleChange = (
+  const handleFormDataChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setSignupError(null);
+    const { name, value } = e.target;
+    setSignupData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    signup(form);
-  };
-
-  useEffect(() => {
-    if (user) {
+    setSigning(true);
+    try {
+      await signup(signupData);
       navigateTo(AppRoute.HOME);
+    } catch (err) {
+      console.log(err);
+      handleError(err, setSignupError);
     }
-  }, [user, useNavigate]);
+    setSigning(false);
+  };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-md shadow-md">
+    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-md shadow-md mb-20">
       <h1 className="text-2xl font-semibold mb-6 text-center">Sign Up</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <TextInput
-          label="Full Name"
-          id="fullname"
-          name="fullname"
-          value={form.fullname}
-          onChange={handleChange}
-          placeholder="Enter your full name"
-          required
-        />
-        <TextInput
           label="Username"
-          id="username"
+          placeholder="e.g. peter123"
           name="username"
-          value={form.username}
-          onChange={handleChange}
-          placeholder="Enter your username"
-          required
+          id="username"
+          value={signupData.username}
+          onChange={handleFormDataChange}
         />
+
+        <TextInput
+          label="Fullname"
+          placeholder="e.g. Peter Parker"
+          name="fullname"
+          id="fullname"
+          value={signupData.fullname}
+          onChange={handleFormDataChange}
+        />
+
         <PasswordInput
           label="Password"
           id="password"
+          placeholder="Create a new password"
           name="password"
-          value={form.password}
-          onChange={handleChange}
-          placeholder="Enter your password"
-          required
+          value={signupData.password}
+          onChange={handleFormDataChange}
         />
+
         <TextInput
-          label="Profile Picture URL"
-          id="profilePictureUrl"
+          label="Profile picture url"
+          placeholder="Enter the url for your profile picture url"
           name="profilePictureUrl"
-          value={form.profilePictureUrl}
-          onChange={handleChange}
-          placeholder="Enter your profile picture URL"
+          id="profilePictureUrl"
+          value={signupData.profilePictureUrl}
           type="url"
+          onChange={handleFormDataChange}
         />
+
         <TextInput
           label="Bio"
-          id="bio"
+          placeholder="Tell use about yourself"
           name="bio"
-          value={form.bio}
-          onChange={handleChange}
-          placeholder="Write something about yourself"
+          id="bio"
+          value={signupData.bio || ""}
+          type="url"
+          rows={5}
           isTextarea
-          rows={3}
+          onChange={handleFormDataChange}
         />
-        <PrimaryButton text="Signup" disabled={loading} />
+
+        <ErrorMessage message={signupError} />
+
+        <PrimaryButton text="Signup" disabled={signing} />
+        <p className="mt-6 text-center text-sm text-gray-600">
+          Already have an account?{" "}
+          <Link
+            to={AppRoute.LOGIN}
+            className="text-blue-600 hover:text-blue-800 font-semibold"
+          >
+            Login
+          </Link>
+        </p>
       </form>
-      {error && (
-        <div className="mt-4 text-red-600 text-center font-medium">{error}</div>
-      )}
-      <p className="mt-6 text-center text-sm text-gray-600">
-        Already have an account?{" "}
-        <Link
-          to={AppRoute.LOGIN}
-          className="text-blue-600 hover:text-blue-800 font-semibold"
-        >
-          Login
-        </Link>
-      </p>
     </div>
   );
-}
+};
 
 export default SignupPage;

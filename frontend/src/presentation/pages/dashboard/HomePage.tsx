@@ -1,12 +1,41 @@
-import { useAuthContext } from "../../../application/context/auth/AuthContext";
+import type React from "react";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../../app/store";
+import { useEffect, useState } from "react";
+import useAuth from "../../../application/hook/useAuth";
+import { CenteredLoadingMessage } from "../../components/common/messages/CenteredLoadingMessage";
+import { useNavigate } from "react-router-dom";
+import { AppRoute } from "../../../router";
 
-function HomePage() {
-  const { user } = useAuthContext();
+export const HomePage: React.FC = () => {
+  const user = useSelector((state: RootState) => state.auth.user);
+  const { refreshToken } = useAuth();
+  const [refreshingToken, setRefreshingToken] = useState(false);
+  const navigateTo = useNavigate();
 
-  if (!user) return;
+  useEffect(() => {
+    const refresh = async () => {
+      setRefreshingToken(true);
+      try {
+        await refreshToken();
+      } catch (err) {
+        console.log(err);
+      }
+      setRefreshingToken(false);
+    };
+    refresh();
+  }, []);
+
+  if (refreshingToken) {
+    return <CenteredLoadingMessage />;
+  }
+
+  if (!user) {
+    navigateTo(AppRoute.LOGIN);
+    return;
+  }
 
   const firstName = user.fullname.split(" ")[0] || "User";
-
   return (
     <div>
       <h1 className="text-2xl font-semibold mb-4">Welcome, {firstName}!</h1>
@@ -17,6 +46,4 @@ function HomePage() {
       <p>Start by creating or opening a note to get things started.</p>
     </div>
   );
-}
-
-export default HomePage;
+};
