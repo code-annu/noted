@@ -1,43 +1,35 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import TextInput from "../../components/common/inputs/TextInputField";
-import type { Note } from "../../../domain/entities/note";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../../app/store";
+import TextInput from "../common/inputs/TextInputField";
+import ErrorMessage from "../common/messages/ErrorMessage";
+import PrimaryButton from "../common/buttons/PrimaryButton";
+import SecondaryButton from "../common/buttons/SecondaryButton";
+import DangerButton from "../common/buttons/DangerButton";
 import useNote from "../../../application/hook/useNote";
-import { CenteredLoadingMessage } from "../../components/common/messages/CenteredLoadingMessage";
-import PrimaryButton from "../../components/common/buttons/PrimaryButton";
-import ErrorMessage from "../../components/common/messages/ErrorMessage";
 import { handleError } from "../../../util/error-handler-util";
 import { AppRoute } from "../../../router";
-import DangerButton from "../../components/common/buttons/DangerButton";
-import SecondaryButton from "../../components/common/buttons/SecondaryButton";
+import useNoteVersion from "../../../application/hook/useNoteVersion";
 
-export const NoteEditorPage: React.FC = () => {
-  const { noteId } = useParams();
-  const [note, setNote] = useState<Note | null>(null);
-  const { getNote, updateNote, deleteNote } = useNote();
+export const NoteEditorSection: React.FC = () => {
+  const currentEditingNote = useSelector(
+    (state: RootState) => state.note.currentEditingNote
+  );
+  const { updateNote, deleteNote } = useNote();
+  const { createNoteVersion } = useNoteVersion();
+
+  if (!currentEditingNote) return <div></div>;
 
   const [isSaved, setIsSaved] = useState(true);
-  const [loadingNote, setLoadingNote] = useState(false);
-  const [noteData, setNoteData] = useState({ title: "", content: "" });
+  const [noteData, setNoteData] = useState({
+    title: currentEditingNote.title,
+    content: currentEditingNote.currentContent,
+  });
   const [error, setError] = useState<string | null>(null);
   const [deletingNote, setDeletingNote] = useState(false);
   const [savingAsNewVersion, setSavingAsNewVersion] = useState(false);
   const navigateTo = useNavigate();
-
-  useEffect(() => {
-    const getNoteById = async () => {
-      if (noteId) {
-        setLoadingNote(true);
-        try {
-          const result = await getNote(noteId);
-          setNote(result);
-          setNoteData({ title: result.title, content: result.currentContent });
-        } catch (err) {}
-        setLoadingNote(false);
-      }
-    };
-    getNoteById();
-  }, []);
 
   const handleNoteDataChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -48,18 +40,15 @@ export const NoteEditorPage: React.FC = () => {
   };
 
   const handleSave = async () => {
-    if (noteId) {
-      setIsSaved(true);
-      try {
-        const updatedNote = await updateNote(noteId, {
-          title: noteData.title,
-          content: noteData.content,
-        });
-        setNote(updatedNote);
-        alert("Note is saved");
-      } catch (err) {
-        handleError(err, setError);
-      }
+    setIsSaved(true);
+    try {
+      await updateNote(currentEditingNote.id, {
+        title: noteData.title,
+        content: noteData.content,
+      });
+      alert("Note is saved");
+    } catch (err) {
+      handleError(err, setError);
     }
   };
 
@@ -68,7 +57,7 @@ export const NoteEditorPage: React.FC = () => {
       setDeletingNote(true);
       const result = confirm("Do you really want to delete this note?");
       if (result) {
-        await deleteNote(noteId!);
+        await deleteNote(currentEditingNote.id);
         alert("Note is deleted successfully");
         navigateTo(`${AppRoute.NOTES}`);
       }
@@ -80,24 +69,23 @@ export const NoteEditorPage: React.FC = () => {
 
   const handleSaveAsNewVersion = async () => {
     setSavingAsNewVersion(true);
+    setIsSaved(true);
+    try {
+      await updateNote(currentEditingNote.id, {
+        title: noteData.title,
+        content: noteData.content,
+      });
+      await createNoteVersion({
+        noteId: currentEditingNote.id,
+        content: noteData.content,
+      });
+      alert("A version is saved for this note");
+    } catch (err) {}
+    setSavingAsNewVersion(false);
   };
 
-  if (loadingNote) {
-    return (
-      <CenteredLoadingMessage message="Hold on preparing your note....." />
-    );
-  }
-
-  if (!note) {
-    return (
-      <div className="flex justify-center items-center h-full mt-16">
-        <p className="text-2xl text-gray-700">Note not found!</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-4xl mx-auto p-6 rounded-lg shadow-lg bg-linear-to-br from-white to-gray-50 min-h-[500px] flex flex-col">
+    <div className="max-w-6xl mx-auto p-6 rounded-lg shadow-lg bg-linear-to-br from-white to-gray-50 min-h-[500px] flex flex-col">
       <h1 className="text-4xl font-bold mb-8 text-gray-900 tracking-wide">
         Edit Your Note
       </h1>
@@ -136,7 +124,6 @@ export const NoteEditorPage: React.FC = () => {
               disabled={isSaved}
               width="w-30"
             />
-
             <SecondaryButton
               text="Save as new Version"
               width="w-50"

@@ -18,8 +18,8 @@ const DangerButton: React.FC<DangerButtonProps> = ({
   disabled = false,
 }) => {
   const styleClasses = `
-    ${width} ${height} rounded-md transition-colors cursor-pointer
-    ${disabled ? "bg-gray-400 text-gray-700 cursor-not-allowed" : "bg-red-600 text-white hover:bg-red-700"}
+    ${width} ${height} rounded-md transition-colors 
+    ${disabled ? "bg-gray-400 text-gray-700 cursor-not-allowed" : "bg-red-600 text-white hover:bg-red-700 cursor-pointer"}
     ${className}
   `;
 

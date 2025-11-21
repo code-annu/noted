@@ -18,11 +18,11 @@ const SecondaryButton: React.FC<SecondaryButtonProps> = ({
   disabled = false,
 }) => {
   const styleClasses = `
-    ${width} ${height} rounded-md transition-colors cursor-pointer
+    ${width} ${height} rounded-md transition-colors 
     ${
       disabled
         ? "bg-gray-400 text-gray-700 cursor-not-allowed"
-        : "bg-green-600 text-white hover:bg-green-700"
+        : "bg-green-600 text-white hover:bg-green-700 cursor-pointer"
     }
     ${className}
   `;

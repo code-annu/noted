@@ -18,11 +18,11 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
   disabled = false,
 }) => {
   const styleClasses = `
-    ${width} ${height} rounded-md transition-colors cursor-pointer 
+    ${width} ${height} rounded-md transition-colors 
     ${
       disabled
         ? "bg-gray-400 text-gray-700 cursor-not-allowed"
-        : "bg-blue-600 text-white hover:bg-blue-700"
+        : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
     }
     ${className}
   `;

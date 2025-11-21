@@ -3,12 +3,15 @@ import { useParams } from "react-router-dom";
 import useNote from "../../../application/hook/useNote";
 import { CenteredLoadingMessage } from "../../components/common/messages/CenteredLoadingMessage";
 import { NoteEditorSection } from "../../components/note/NoteEditorSection";
+import { NoteVersionsSection } from "../../components/note/NoteVersionsSection";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../app/store";
+import useNoteVersion from "../../../application/hook/useNoteVersion";
 
 export const NewNoteEditorPage: React.FC = () => {
   const { noteId } = useParams();
   const { getNote } = useNote();
+  const { listNoteVersions } = useNoteVersion();
   const [preparingNote, setPreparingNote] = useState(false);
   const currentEditingNote = useSelector(
     (state: RootState) => state.note.currentEditingNote
@@ -19,6 +22,7 @@ export const NewNoteEditorPage: React.FC = () => {
       setPreparingNote(true);
       try {
         await getNote(noteId!);
+        await listNoteVersions(noteId!);
       } catch (err) {}
       setPreparingNote(false);
     };
@@ -42,6 +46,7 @@ export const NewNoteEditorPage: React.FC = () => {
   return (
     <div>
       <NoteEditorSection />
+      <NoteVersionsSection />
     </div>
   );
 };
