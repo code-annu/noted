@@ -25,7 +25,8 @@ const noteController = new NoteController(
 const noteVersionController = new NoteVersionController(
   new NoteVersionRepository(),
   new NoteRepository(),
-  new UserRepository()
+  new UserRepository(),
+  new CollaborationRepository()
 );
 
 const collaborationController = new CollaborationController(
