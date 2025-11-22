@@ -12,7 +12,7 @@ const app = express();
 const BASE_API_URL = "/api/v1";
 
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "https://noted-tawny.vercel.app",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true, // if you're sending cookies or auth headers
