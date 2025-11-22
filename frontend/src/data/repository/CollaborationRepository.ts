@@ -19,9 +19,7 @@ export class CollaborationRepository implements ICollaborationRepository {
     );
   }
 
-  async getCollaboration(id: string): Promise<Collaboration> {
-    throw new Error("Method not implemented.");
-  }
+
 
   async getMyCollaborations(): Promise<Collaboration[]> {
     return await getRequest<Collaboration[]>("/collaborations");

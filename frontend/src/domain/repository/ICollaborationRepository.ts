@@ -9,8 +9,6 @@ export interface ICollaborationRepository {
     collaborationCreate: CollaborationCreate
   ): Promise<Collaboration>;
 
-  getCollaboration(id: string): Promise<Collaboration>;
-
   getMyCollaborations(): Promise<Collaboration[]>;
 
   acceptCollaboration(id: string): Promise<Collaboration>;
