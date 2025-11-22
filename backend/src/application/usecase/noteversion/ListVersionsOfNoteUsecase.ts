@@ -32,8 +32,8 @@ export class ListVersionsOfNoteUsecase {
     );
 
     if (
-      note.ownerId !== user.id ||
-      collaborator === null ||
+      note.ownerId !== user.id &&
+      collaborator === null &&
       collaborator === undefined
     ) {
       throw new ForbiddenError(
