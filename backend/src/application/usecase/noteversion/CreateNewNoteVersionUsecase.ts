@@ -1,5 +1,6 @@
 import { ForbiddenError } from "../../../domain/error/ForbiddenError";
 import { NotFoundError } from "../../../domain/error/NotFoundError";
+import { ICollaborationRepository } from "../../../domain/repository/ICollaborationRepository";
 import { INoteRepository } from "../../../domain/repository/INoteRepository";
 import { INoteVersionRepository } from "../../../domain/repository/INoteVersionRepository";
 import { IUserRepository } from "../../../domain/repository/IUserRepository";
@@ -12,7 +13,8 @@ export class CreateNewNoteVersionUsecase {
   constructor(
     private readonly noteVersionRepo: INoteVersionRepository,
     private readonly noteRepo: INoteRepository,
-    private readonly userRepo: IUserRepository
+    private readonly userRepo: IUserRepository,
+    private readonly collaborationRepo: ICollaborationRepository
   ) {}
 
   async execute(
@@ -25,7 +27,20 @@ export class CreateNewNoteVersionUsecase {
     const note = await this.noteRepo.getNote(noteVersionInput.noteId);
     if (!note) throw new NotFoundError("Note not found!");
 
-    if (note.ownerId !== user.id) {
+    const noteCollaborations =
+      await this.collaborationRepo.listCollaborationsOfNote(
+        noteVersionInput.noteId
+      );
+
+    const collaborator = noteCollaborations.find(
+      (noteCollaboration) => noteCollaboration.userId === userId
+    );
+
+    if (
+      note.ownerId !== user.id ||
+      collaborator === null ||
+      collaborator === undefined
+    ) {
       throw new ForbiddenError(
         "You are not authorized create version for this note. Only owner can create versions"
       );
