@@ -27,14 +27,19 @@ export class InviteCollaboratorUsecase {
     const note = await this.noteRepo.getNote(noteId);
     if (!note) throw new NotFoundError("Note not found!");
 
-    const invitee = await this.userRepo.getUserByUsername(input.username);
-    if (!invitee) throw new NotFoundError("Invitee not found!");
-
     if (note.ownerId !== invitedBy) {
       throw new ForbiddenError(
         "You are not authorized to invite collaborators"
       );
     }
+
+    if (input.username === inviter.username) {
+      throw new ConflictError(
+        "You cannot invite yourself to a note which is created by you"
+      );
+    }
+    const invitee = await this.userRepo.getUserByUsername(input.username);
+    if (!invitee) throw new NotFoundError("Invitee not found!");
 
     const collaborations =
       await this.collaborationRepo.listCollaborationsOfNote(note.id);
