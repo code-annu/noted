@@ -17,7 +17,7 @@ export class CollaborationController {
   private readonly acceptCollaborationInvitation: AcceptCollaborationInvitationUsecase;
   private readonly listMyCollaborations: ListMyCollaborationsUsecase;
   private readonly listNoteCollaborations: ListNoteCollaborationsUsecase;
-  private readonly rejectCollaborationInvitaion: RejectCollaborationInvitationUsecase;
+  private readonly rejectCollaborationInvitation: RejectCollaborationInvitationUsecase;
 
   constructor(
     userRepo: IUserRepository,
@@ -49,7 +49,7 @@ export class CollaborationController {
       collaborationRepo
     );
 
-    this.rejectCollaborationInvitaion =
+    this.rejectCollaborationInvitation =
       new RejectCollaborationInvitationUsecase(userRepo, collaborationRepo);
   }
 
@@ -161,7 +161,7 @@ export class CollaborationController {
         );
       }
 
-      await this.rejectCollaborationInvitaion.execute(collaborationId, userId!);
+      await this.rejectCollaborationInvitation.execute(collaborationId, userId!);
 
       res.status(200).json({ message: "Collaboration is rejected." });
     } catch (error) {

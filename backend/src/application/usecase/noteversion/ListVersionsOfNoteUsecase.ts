@@ -1,5 +1,6 @@
 import { ForbiddenError } from "../../../domain/error/ForbiddenError";
 import { NotFoundError } from "../../../domain/error/NotFoundError";
+import { ICollaborationRepository } from "../../../domain/repository/ICollaborationRepository";
 import { INoteRepository } from "../../../domain/repository/INoteRepository";
 import { INoteVersionRepository } from "../../../domain/repository/INoteVersionRepository";
 import { IUserRepository } from "../../../domain/repository/IUserRepository";
@@ -9,7 +10,8 @@ export class ListVersionsOfNoteUsecase {
   constructor(
     private readonly noteVersionRepo: INoteVersionRepository,
     private readonly noteRepo: INoteRepository,
-    private readonly userRepo: IUserRepository
+    private readonly userRepo: IUserRepository,
+    private readonly collaborationRepo: ICollaborationRepository
   ) {}
 
   async execute(
@@ -22,7 +24,18 @@ export class ListVersionsOfNoteUsecase {
     const note = await this.noteRepo.getNote(noteId);
     if (!note) throw new NotFoundError("Note not found!");
 
-    if (note.ownerId !== user.id) {
+    const noteCollaborations =
+      await this.collaborationRepo.listCollaborationsOfNote(noteId);
+
+    const collaborator = noteCollaborations.find(
+      (noteCollaboration) => noteCollaboration.userId === userId
+    );
+
+    if (
+      note.ownerId !== user.id ||
+      collaborator === null ||
+      collaborator === undefined
+    ) {
       throw new ForbiddenError(
         "You are not authorized view versions for this note."
       );

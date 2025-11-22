@@ -8,12 +8,14 @@ import {
   NoteVersionCreateInputSchema,
   NoteVersionUpdateInputSchema,
 } from "../schema/note-version-schema";
+import { CollaborationRepository } from "../../infrastructure/repository/CollaborationRepository";
 
 export const noteVersionRouter = Router({ mergeParams: true });
 const noteVersionController = new NoteVersionController(
   new NoteVersionRepository(),
   new NoteRepository(),
-  new UserRepository()
+  new UserRepository(),
+  new CollaborationRepository()
 );
 
 noteVersionRouter.post(

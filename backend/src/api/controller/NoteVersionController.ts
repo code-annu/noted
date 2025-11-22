@@ -13,6 +13,7 @@ import {
 import { BadRequestError } from "../../domain/error/BadRequestError";
 import { mapToNoteVersionResponse } from "../mapper/note-version-response-mapper";
 import { ListVersionsOfNoteUsecase } from "../../application/usecase/noteversion/ListVersionsOfNoteUsecase";
+import { ICollaborationRepository } from "../../domain/repository/ICollaborationRepository";
 
 export class NoteVersionController {
   private readonly createNoteVersionUsecase: CreateNewNoteVersionUsecase;
@@ -23,12 +24,14 @@ export class NoteVersionController {
   constructor(
     noteVersionRepo: INoteVersionRepository,
     noteRepo: INoteRepository,
-    userRepo: IUserRepository
+    userRepo: IUserRepository,
+    collaborationRepo: ICollaborationRepository
   ) {
     this.createNoteVersionUsecase = new CreateNewNoteVersionUsecase(
       noteVersionRepo,
       noteRepo,
-      userRepo
+      userRepo,
+      collaborationRepo
     );
     this.updateNoteVersionUsecase = new UpdateNoteVersionUsecase(
       noteVersionRepo,
@@ -42,7 +45,8 @@ export class NoteVersionController {
     this.listVersionsOfNoteUsecase = new ListVersionsOfNoteUsecase(
       noteVersionRepo,
       noteRepo,
-      userRepo
+      userRepo,
+      collaborationRepo
     );
   }
 
