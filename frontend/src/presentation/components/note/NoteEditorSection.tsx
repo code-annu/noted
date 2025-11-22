@@ -80,7 +80,10 @@ export const NoteEditorSection: React.FC = () => {
         content: noteData.content,
       });
       alert("A version is saved for this note");
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+      handleError(err, setError);
+    }
     setSavingAsNewVersion(false);
   };
 

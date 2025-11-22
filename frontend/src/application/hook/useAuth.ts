@@ -41,7 +41,12 @@ function useAuth() {
     }
   };
 
-  return { signup, login, refreshToken };
+  const logout = async () => {
+    dispatch(setUser({ user: null }));
+    StorageUtil.clearTokens();
+  };
+
+  return { signup, login, refreshToken, logout };
 }
 
 export default useAuth;

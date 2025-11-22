@@ -7,15 +7,19 @@ import { NoteVersionsSection } from "../../components/note/NoteVersionsSection";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../app/store";
 import useNoteVersion from "../../../application/hook/useNoteVersion";
+import { NoteCollaborationsSection } from "../../components/note/NoteCollaborationsSection";
+import useNoteCollaboration from "../../../application/hook/useNoteCollaboration";
 
-export const NewNoteEditorPage: React.FC = () => {
+export const NoteEditorPage: React.FC = () => {
   const { noteId } = useParams();
-  const { getNote } = useNote();
-  const { listNoteVersions } = useNoteVersion();
   const [preparingNote, setPreparingNote] = useState(false);
   const currentEditingNote = useSelector(
     (state: RootState) => state.note.currentEditingNote
   );
+
+  const { getNote } = useNote();
+  const { listNoteVersions } = useNoteVersion();
+  const { listNoteCollaborations } = useNoteCollaboration();
 
   useEffect(() => {
     const prepareNote = async () => {
@@ -23,6 +27,7 @@ export const NewNoteEditorPage: React.FC = () => {
       try {
         await getNote(noteId!);
         await listNoteVersions(noteId!);
+        await listNoteCollaborations(noteId!);
       } catch (err) {}
       setPreparingNote(false);
     };
@@ -44,9 +49,14 @@ export const NewNoteEditorPage: React.FC = () => {
   }
 
   return (
-    <div>
-      <NoteEditorSection />
-      <NoteVersionsSection />
+    <div className="flex my-10 mx-5">
+      <div className="flex-1">
+        <NoteEditorSection />
+        <NoteVersionsSection />
+      </div>
+      <div className="w-1/4 ml-4">
+        <NoteCollaborationsSection />
+      </div>
     </div>
   );
 };

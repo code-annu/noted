@@ -1,17 +1,25 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { AppRoute } from "../../../../router";
 import type { User } from "../../../../domain/entities/user";
+import useAuth from "../../../../application/hook/useAuth";
 
 interface SideNavbarProps {
   user: User;
 }
 
 const SideNavbar: React.FC<SideNavbarProps> = ({ user }) => {
-  // const { logout, user } = useAuth();
+  const { logout } = useAuth();
+  const navigateTo = useNavigate();
 
+  const handleLogout = () => {
+    const doLogout = async () => {
+      await logout();
+      navigateTo(AppRoute.LOGIN);
+    };
 
-  const handleLogout = () => {};
+    doLogout();
+  };
 
   const linkClassNames = ({ isActive }: { isActive: boolean }) =>
     `text-left px-4 py-2 rounded transition ${

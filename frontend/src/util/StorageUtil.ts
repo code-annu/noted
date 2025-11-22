@@ -14,4 +14,9 @@ export class StorageUtil {
   static getRefreshToken(): string | null {
     return localStorage.getItem("refreshToken");
   }
+
+  static clearTokens() {
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("accessToken");
+  }
 }
