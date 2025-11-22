@@ -150,7 +150,7 @@ noted/
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/noted.git
+git clone https://github.com/code-annu/noted.git
 cd noted
 ```
 
@@ -277,8 +277,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👤 Author
 
 **Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
+- GitHub: [@code-annu](https://github.com/code-annu)
 
 ---
 
@@ -292,7 +291,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Contact
 
-For questions or suggestions, please open an issue or contact me at your.email@example.com
+For questions or suggestions, please open an issue or contact me at code.annu@gmail.com
 
 ---
 
